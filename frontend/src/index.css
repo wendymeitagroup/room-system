@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Acme&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Italianno&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+
+@font-face {
+    font-family: "nishikiteki";
+    src: local("nishiki-teki"),
+      url("./fonts/nishiki-teki-2.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "maoken";
+    src: local("MaoKenShiJinHei"),
+      url("./fonts/maoken-2.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "yezi";
+  src: local("YeZiGongChangAoYeHei"),
+    url("./fonts/YeZiGongChangAoYeHei-2.ttf") format("truetype");
+}
+
+
+/*
+.fc-event {
+  height:20px !important;
+}
+*/
+/*
+.rbc-calendar .rbc-time-view .rbc-time-header.rbc-overflowing {
+  margin-right: unset !important;
+}
+
+.rbc-time-header-content {
+  display: none;
+}
+
+.rbc-row-content {
+  display: none;
+}
+/*
+.rbc-header {
+    background: #caddff;
+    border: 2px solid #5479f7;
+}
+*/
+
+/*設定橫的線*/
+/*
+.rbc-timeslot-group { 
+  border: 2px solid #5479f7;
+}
+
+.rbc-label {
+  font-size:  20px;
+  font-family: 'maoken';
+}
+*/
+
+/*
+.rbc-row {
+  border: 1px solid #5479f7;
+  display: none;
+}
+*/
+
+/*
+.columnheader {
+  border: 1px solid #5479f7;
+}
+*/

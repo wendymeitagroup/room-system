@@ -1,0 +1,61 @@
+這是一個會議室預約系統，
+使用react修改下面程式碼，
+日曆使用react-big-calender套件，
+讓日曆中每一個時段的格子都可以點擊，
+點擊後會跳出一個預約表單，
+印出修改後完整程式碼，不要省略:
+
+Home.jsx程式碼:
+import React, { useState } from 'react';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+import meeting from '../images/meeting.png';
+import ReserveForm from './ReserveForm.jsx'; //預約表單
+
+moment.locale('zh-cn');
+const localizer = momentLocalizer(moment);
+
+const Home = () => {
+    const myEventsList = [
+        {
+            id: 0,
+            title: 'Meeting',
+            start: new Date(2024, 1, 22, 9, 0),
+            end: new Date(2024, 1, 22, 10, 0),
+        },
+    ];      
+
+    const formats = {
+        timeGutterFormat: (date, culture, localizer) =>
+        localizer.format(date, 'H:mm', culture),
+    };
+
+    return (
+        <>
+            <Calendar
+                localizer={localizer}
+                events={myEventsList}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: 500 }}
+                defaultView={'work_week'}
+                views={'work_week'}
+                min={new Date(2024, 1, 22, 9, 0)}
+                max={new Date(2024, 1, 22, 18, 30)}
+                step={30}
+                timeslots={1}
+                formats={formats}
+                messages={{next:"下週",previous:"上週",today:"本週"}}
+            />
+            <ReserveForm /> {/* 預約表單 */}
+        </>
+    );
+};
+
+export default Home;
+
+
+
+
