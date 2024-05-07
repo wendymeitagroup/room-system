@@ -35,12 +35,15 @@ const UpdateForm = ({ slot, event, handleCloseForm }) => {
             setSelectedApplicantName(event.applicant_name);               //申請者姓名
             setSelectedApplicantEmail(event.applicant_email);             //申請者email
 
-            setSelectedAttendeesEmployeeId(event.attendees_employee_id);  //與會者工號
+            if (event.attendees_employee_id) {
+                setSelectedAttendeesEmployeeId(event.attendees_employee_id.split(',')); //與會者工號
+            }
             if (event.attendees_name) {                                 
-                setSelectedAttendeesName(event.attendees_name.split(','));//與會者姓名
-            }           
-            setSelectedAttendeesEmail(event.attendees_email);             //與會者email         
-            
+                setSelectedAttendeesName(event.attendees_name.split(',')); //與會者姓名
+            }      
+            if (event.attendees_email) {
+                setSelectedAttendeesEmail(event.attendees_email.split(',')); //與會者email         
+            }    
             setLocation(event.location_name);                             //地點
             setDate(moment(event.reservation_date).format('YYYY-MM-DD')); //日期
             setStartTime(event.start_time.substring(0, 5));               //開始時間

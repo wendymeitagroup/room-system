@@ -215,25 +215,25 @@ const handleEventMouseLeave = (info) => {
                     ))}
                 </div>
                 <FullCalendar
-                    selectable={true}
-                    select={(dragSlot) => handleDragSlotSelect(dragSlot)}
-                    dateClick={(dateSlot) => handleDateSlotSelect(dateSlot)}
+                    selectable={true} //設定每個格子都可以選取
+                    select={(dragSlot) => handleDragSlotSelect(dragSlot)} //拖曳格子
+                    dateClick={(dateSlot) => handleDateSlotSelect(dateSlot)} //點擊格子
                     plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin ]}
-                    initialView="timeGridWeek"
-                    weekends={false}
-                    allDaySlot={false}
-                    nowIndicator={true}
-                    slotLabelInterval={{minute: 30}}
+                    initialView="timeGridWeek" //設定週顯示
+                    weekends={false} //不顯示六、日
+                    allDaySlot={false} //隱藏星期標題下面all Day的那行格子
+                    nowIndicator={true} //現在時間指示器
+                    slotLabelInterval={{minute: 30}} //設定時間區間30分鐘
                     slotMinTime="09:00"
                     slotMaxTime="18:30"
-                    slotLabelFormat={{hour: 'numeric', minute: '2-digit', hour12: false}}
-                    contentHeight= 'auto'
-                    locale="zh-tw"
-                    buttonText={{today: '本週'}}
+                    slotLabelFormat={{hour: 'numeric', minute: '2-digit', hour12: false}} //不顯示am pm 
+                    contentHeight= 'auto' //刪掉18:00底下多的空白
+                    locale="zh-tw"        //語言:繁體中文
+                    buttonText={{today: '本週'}} //上面的切換按鈕改成本週
                     headerToolbar={{
                         left: null,
-                        center: 'title',
-                        right: 'prev,today,next'
+                        center: 'title', //標題置中
+                        right: 'prev,today,next' //右邊顯示按鈕<本週>
                     }}
                     dayHeaderFormat={(param) => {
                         const date = moment(param.date);
@@ -249,9 +249,9 @@ const handleEventMouseLeave = (info) => {
                         separator: '~',
                         omitCommas: true
                     }}
-                    datesSet={(week) => {
-                        const startDate = moment(week.start).format('YYYY-MM-DD');
-                        const endDate = moment(week.end).subtract(1, 'day').format('YYYY-MM-DD');
+                    datesSet={(week) => { //獲取那週的開始日期、結束日期
+                        const startDate = moment(week.start).format('YYYY-MM-DD'); //那週的開始日期
+                        const endDate = moment(week.end).subtract(1, 'day').format('YYYY-MM-DD'); //那週的結束日期
                         setStartDate(startDate);
                         setEndDate(endDate);
                     }}
