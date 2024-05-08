@@ -110,7 +110,7 @@ const ReserveForm = ({ slot, onClose, startDate, endDate }) => {
             start_time: moment(startTime, 'HH:mm').format('HH:mm'), //開始時間 修改成mysql time格式
             end_time: moment(endTime, 'HH:mm').format('HH:mm'),     //結束時間 修改成mysql time格式
         };
-        console.log(reservationData); // 在此印出 reservationData
+        console.log(reservationData); //印出預約資料reservationData
         //檢查是否預約到已經被預約的時段
         const checkReservedTime = async () => {
             try {

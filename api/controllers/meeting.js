@@ -79,58 +79,39 @@ export const getLocationMeetings = (req, res) => {
 //修改會議預約
 export const updateMeeting = async (req, res) => {
     const reservation_id = req.params.id;
-    const { attendees, location, start_time, end_time } = req.body;
+    const { selectedAttendeesEmployeeId, location, start_time, end_time } = req.body;
 
     // 更新預約表資料
     const updateReservationQuery = "UPDATE reservation SET location_id = (SELECT room_id FROM room WHERE room_name = ?), start_time = ?, end_time = ? WHERE reservation_id = ?";
-    db.query(updateReservationQuery, [location, start_time, end_time, reservation_id], (err) => {
-         if (err) {
+    
+    db.query(updateReservationQuery, [location, start_time, end_time, reservation_id], (err, result) => {
+        if (err) {
             console.error("Error updating reservation:", err);
             return res.status(500).json({ error: "Error updating reservation" });
-         }
- 
-         // 更新與會者資料
-         const deleteAttendeesQuery = "DELETE FROM attendee WHERE attendee_reservation_id = ?";
-         db.query(deleteAttendeesQuery, [reservation_id], (err) => {
-             if (err) {
-                 console.error("Error deleting previous attendees:", err);
-                 return res.status(500).json({ error: "Error updating attendees" });
-             }
- 
-             //查詢每個與會者的工號，插入到與會者表中
-             const insertAttendeesQuery = "INSERT INTO attendee (attendee_reservation_id, attendee_employee_id) VALUES ?";
-             const attendeesData = attendees.map((attendeeName) => {
-                 return new Promise((resolve, reject) => {
-                     const getUserQuery = "SELECT employee_id FROM user WHERE name = ?";
-                     db.query(getUserQuery, [attendeeName], (err, result) => {
-                         if (err) {
-                             console.error("Error fetching user:", err);
-                             reject(err);
-                         } else if (result.length === 0) {
-                             console.error("User not found:", attendeeName);
-                             reject(new Error("User not found"));
-                         } else {
-                             resolve([reservation_id, result[0].employee_id]);
-                         }
-                     });
-                 });
-             });
- 
-             Promise.all(attendeesData).then((attendeesDataResolved) => {
-                 db.query(insertAttendeesQuery, [attendeesDataResolved], (err) => {
-                     if (err) {
-                         console.error("Error adding new attendees:", err);
-                         return res.status(500).json({ error: "Error updating attendees" });
-                     }
-                     res.status(200).json({ message: "Meeting and attendees updated successfully" });
-                 });
-             }).catch((err) => {
-                 console.error("Error resolving attendees data:", err);
-                 res.status(500).json({ error: "Error updating attendees" });
-             });
-         });
-     });
+        }
+
+        // 刪除舊的與會者資料
+        const deleteAttendeesQuery = "DELETE FROM attendee WHERE attendee_reservation_id = ?";
+        db.query(deleteAttendeesQuery, [reservation_id], (err, result) => {
+            if (err) {
+                console.error("Error deleting previous attendees:", err);
+                return res.status(500).json({ error: "Error updating attendees" });
+            }
+            
+            // 新增新的與會者資料
+            const insertAttendeesQuery = "INSERT INTO attendee (attendee_reservation_id, attendee_employee_id) VALUES ?";
+            const attendeesValues = selectedAttendeesEmployeeId.map(employeeId => [reservation_id, employeeId]);
+            db.query(insertAttendeesQuery, [attendeesValues], (err, result) => {
+                if (err) {
+                    console.error("Error adding new attendees:", err);
+                    return res.status(500).json({ error: "Error updating attendees" });
+                }
+                return res.status(200).json({ message: "Reservation updated successfully" });
+            });
+        });
+    });
 };
+
 
 //刪除會議預約
 export const deleteMeeting = (req, res) => {
@@ -143,7 +124,7 @@ export const deleteMeeting = (req, res) => {
             return res.status(500).json({ error: "Error deleting attendees" });
         }
 
-    // 然後刪除會議資料
+    // 然後刪除預約表中的會議資料
     const deleteReservationQuery = "DELETE FROM reservation WHERE reservation_id = ?";
     db.query(deleteReservationQuery, [reservation_id], (err, result) => {
         if (err) {

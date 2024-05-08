@@ -30,7 +30,6 @@ const UpdateForm = ({ slot, event, handleCloseForm }) => {
             // 將 event 中的資料放到相應的狀態中
             setReservationId(event.reservation_id);                       //會議編號
             setSubject(event.subject);                                    //主題
-            
             setSelectedApplicantEmployeeId(event.applicant_employee_id)   //申請者工號
             setSelectedApplicantName(event.applicant_name);               //申請者姓名
             setSelectedApplicantEmail(event.applicant_email);             //申請者email
@@ -68,25 +67,11 @@ const UpdateForm = ({ slot, event, handleCloseForm }) => {
     }, []);
 
     //修改會議預約 http://localhost:8800/api/updateMeeting
-    const updateMeeting = async () => {
+    const updateMeeting = async (updateReservationData) => {
         try {
-            let attendeesData = []; // 初始化與會者資料
-            // 檢查是否有新增或刪除與會者，如果有則更新與會者資料
-            if (selectedAttendeesName.length !== event.attendees_name.length || !selectedAttendeesName.every(name => event.attendees_name.includes(name))) {
-                attendeesData = selectedAttendeesName; // 新增或刪除了與會者，更新與會者資料
-            } else {
-                attendeesData = event.attendees_name; // 沒有新增或刪除與會者，保持原有與會者資料
-            }
-            const updateReservationData = {
-                attendees: attendeesData,                               //與會者
-                location,                                               //地點
-                start_time: moment(startTime, 'HH:mm').format('HH:mm'), //開始時間，修改成mysql time格式
-                end_time: moment(endTime, 'HH:mm').format('HH:mm'),     //結束時間，修改成mysql time格式
-            }
             const res = await axios.put(`${apiurl}/updateMeeting/${reservationId}`, updateReservationData);
             console.log(res.data)
-            // 更新後端返回的新與會者資料到前端
-            //setSelectedAttendeesNames(res.data.attendees);
+            
             setShowUpdateReservationSuccess(true); //顯示修改預約成功訊息
             setTimeout(() => {
                 setShowUpdateReservationSuccess(false);
@@ -109,7 +94,21 @@ const UpdateForm = ({ slot, event, handleCloseForm }) => {
     //送出修改表單
     const handleSubmit = async (e) => {
         e.preventDefault();   
-
+        //預約修改資料
+        const updateReservationData = {
+            subject,                                                //主題
+            selectedApplicantEmployeeId,                            //申請者工號
+            selectedApplicantName,                                  //申請者姓名
+            selectedApplicantEmail,                                 //申請者email
+            selectedAttendeesEmployeeId,                            //所有與會者工號
+            selectedAttendeesName,                                  //所有與會者姓名
+            selectedAttendeesEmail,                                 //所有與會者email
+            location,                                               //地點
+            date: moment(date).format('YYYY-MM-DD'),                //日期     修改成mysql date格式
+            start_time: moment(startTime, 'HH:mm').format('HH:mm'), //開始時間，修改成mysql time格式
+            end_time: moment(endTime, 'HH:mm').format('HH:mm'),     //結束時間，修改成mysql time格式
+        }
+        console.log("預約修改資料: ", updateReservationData); //印出預約修改資料updateReservationData
         //檢查是否預約到已經被預約的時段
         const checkReservedTime = async () => {
             try {
@@ -181,7 +180,7 @@ const UpdateForm = ({ slot, event, handleCloseForm }) => {
             }, 2500);
             
         } else {
-            updateMeeting(); //檢查所有條件都通過才可以修改會議室預約
+            updateMeeting(updateReservationData); //檢查所有條件都通過才可以修改會議室預約
         }
     };
 
